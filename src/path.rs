@@ -204,3 +204,9 @@ impl fmt::Display for Path {
         write!(f, "{}", self.to_string())
     }
 }
+
+impl fmt::Debug for Path {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "Path({})", self.to_string())
+    }
+}
