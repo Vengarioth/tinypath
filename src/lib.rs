@@ -108,4 +108,20 @@ mod tests {
 
         assert_eq!(path.relative_to(&base).to_string(), "C:/bar/foo.bar");
     }
+
+    #[test]
+    fn it_becomes_relative_from_a_base_file() {
+        let path = Path::from_str("C:/bar/foo.bar").unwrap();
+        let base = Path::from_str("C:/bar/baz.bb").unwrap();
+
+        assert_eq!(path.relative_from(&base).to_string(), "./foo.bar");
+    }
+
+    #[test]
+    fn it_becomes_relative_from_a_base_folder() {
+        let path = Path::from_str("C:/bar/foo.bar").unwrap();
+        let base = Path::from_str("C:/bar/").unwrap();
+
+        assert_eq!(path.relative_from(&base).to_string(), "./foo.bar");
+    }
 }

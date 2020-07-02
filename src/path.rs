@@ -100,6 +100,26 @@ impl Path {
         Self::new(segments)
     }
 
+    pub fn relative_from(&self, base: &Self) -> Self {
+        let mut base_segments = base.segments.clone();
+
+        if base_segments.len() > 0 && base_segments[base_segments.len() - 1] != Segment::Separator {
+            base_segments.pop();
+        }
+
+        let mut segments = self.segments.clone();
+
+        while base_segments.len() > 0 && segments.len() > 0 && base_segments[0] == segments[0] {
+            base_segments.remove(0);
+            segments.remove(0);
+        }
+
+        segments.insert(0, Segment::Separator);
+        segments.insert(0, Segment::Dot);
+
+        Self::new(segments)
+    }
+
     pub fn relative_to(&self, base: &Self) -> Self {
         let mut segments = base.segments.clone();
 
