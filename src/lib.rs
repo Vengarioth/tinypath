@@ -84,4 +84,11 @@ mod tests {
         path.pop();
         assert_eq!(path.to_string(), "C:/foo/");
     }
+
+    #[test]
+    fn it_converts_to_path_buf() {
+        let path = parse("C:/foo/bar/").unwrap();
+        let std_path: std::path::PathBuf = path.into();
+        assert_eq!(std::path::PathBuf::from("C:/foo/bar/"), std_path);
+    }
 }

@@ -1,4 +1,5 @@
 use crate::Segment;
+use std::path::PathBuf;
 
 pub struct Path {
     segments: Vec<Segment>,
@@ -109,5 +110,11 @@ impl Path {
         if self.segments.len() > 0 {
             self.segments.pop();
         }
+    }
+}
+
+impl Into<PathBuf> for Path {
+    fn into(self) -> PathBuf {
+        PathBuf::from(self.to_platform_string())
     }
 }
