@@ -1,12 +1,24 @@
-use crate::Segment;
-use std::path::PathBuf;
+use crate::{Segment, Token, PathError};
+use std::path::{PathBuf, Path as StdPath};
 
 pub struct Path {
     segments: Vec<Segment>,
 }
 
 impl Path {
-    pub fn new(segments: Vec<Segment>) -> Self {
+
+    pub fn from_str(path: &str) -> Result<Self, PathError> {
+        let segments = Token::from_str(path)?;
+        Ok(Self::new(segments))
+    }
+
+    pub fn from_std_path(path: &StdPath) -> Result<Self, PathError> {
+        let path = path.as_os_str().to_str().ok_or(PathError::ConvertError)?;
+        let segments = Token::from_str(path)?;
+        Ok(Self::new(segments))
+    }
+
+    pub(crate) fn new(segments: Vec<Segment>) -> Self {
         Self {
             segments,
         }
@@ -60,8 +72,8 @@ impl Path {
 
     pub fn dedot(&self) -> Self {
         let mut segments = Vec::new();
+        
         let mut skip_next_separator = false;
-
         for segment in self.segments.iter() {
             match segment {
                 Segment::Separator => {
@@ -88,7 +100,41 @@ impl Path {
         Self::new(segments)
     }
 
-    pub fn append(&self, append: Self) -> Self {
+    pub fn relative_to(&self, base: &Self) -> Self {
+        let mut segments = base.segments.clone();
+
+        if segments.len() > 0 && segments[segments.len() - 1] != Segment::Separator {
+            segments.pop();
+        }
+
+        let mut skip_next_separator = true;
+        for segment in self.segments.iter() {
+            match segment {
+                Segment::Separator => {
+                    if skip_next_separator {
+                        skip_next_separator = false;
+                    } else {
+                        segments.push(Segment::Separator);
+                    }
+                },
+                Segment::Segment(value) => {
+                    segments.push(Segment::Segment(value.to_string()));
+                },
+                Segment::Dot => {
+                    skip_next_separator = true;
+                },
+                Segment::DotDot => {
+                    segments.pop();
+                    segments.pop();
+                    skip_next_separator = true;
+                }
+            }
+        }
+
+        Self::new(segments)
+    }
+
+    pub fn append(&self, append: &Self) -> Self {
         let mut segments = self.segments.clone();
         segments.append(&mut append.segments.clone());
         Self::new(segments)
