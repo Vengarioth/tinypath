@@ -7,4 +7,7 @@ pub enum PathError {
 
     #[error("Could not convert from an &std::path::Path")]
     ConvertError,
+
+    #[error("Could not use the current environment to get the required path")]
+    EnvError(#[from] std::io::Error),
 }

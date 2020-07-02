@@ -18,6 +18,16 @@ impl Path {
         Ok(Self::new(segments))
     }
 
+    pub fn from_current_exe() -> Result<Self, PathError> {
+        use std::env::current_exe;
+        Self::from_std_path(&current_exe()?)
+    }
+
+    pub fn from_current_dir() -> Result<Self, PathError> {
+        use std::env::current_dir;
+        Self::from_std_path(&current_dir()?)
+    }
+
     pub(crate) fn new(segments: Vec<Segment>) -> Self {
         Self {
             segments,
@@ -155,8 +165,12 @@ impl Path {
     }
 
     pub fn append(&self, append: &Self) -> Self {
-        let mut segments = self.segments.clone();
-        segments.append(&mut append.segments.clone());
+        let mut segments = self.dedot().segments.clone();
+        if segments.len() > 0 && segments[segments.len() - 1] != Segment::Separator {
+            segments.push(Segment::Separator);
+        }
+
+        segments.append(&mut append.dedot().segments.clone());
         Self::new(segments)
     }
 

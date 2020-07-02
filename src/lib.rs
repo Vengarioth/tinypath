@@ -35,21 +35,21 @@ mod tests {
     fn it_appends() {
         let path = Path::from_str("C:/").unwrap();
         let append = Path::from_str("./foo/").unwrap();
-        assert_eq!(path.append(&append).dedot().to_string(), "C:/foo/");
+        assert_eq!(path.append(&append).to_string(), "C:/foo/");
     }
 
     #[test]
     fn it_appends_backslash() {
         let path = Path::from_str("C:\\").unwrap();
         let append = Path::from_str(".\\foo\\").unwrap();
-        assert_eq!(path.append(&append).dedot().to_string(), "C:/foo/");
+        assert_eq!(path.append(&append).to_string(), "C:/foo/");
     }
 
     #[test]
     fn it_appends_mixed() {
         let path = Path::from_str("C:\\").unwrap();
         let append = Path::from_str("./foo/").unwrap();
-        assert_eq!(path.append(&append).dedot().to_string(), "C:/foo/");
+        assert_eq!(path.append(&append).to_string(), "C:/foo/");
     }
 
     #[test]
