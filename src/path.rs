@@ -1,12 +1,12 @@
 use crate::{Segment, Token, PathError};
 use std::path::{PathBuf, Path as StdPath};
+use std::fmt;
 
 pub struct Path {
     segments: Vec<Segment>,
 }
 
 impl Path {
-
     pub fn from_str(path: &str) -> Result<Self, PathError> {
         let segments = Token::from_str(path)?;
         Ok(Self::new(segments))
@@ -182,5 +182,11 @@ impl Path {
 impl Into<PathBuf> for Path {
     fn into(self) -> PathBuf {
         PathBuf::from(self.to_platform_string())
+    }
+}
+
+impl fmt::Display for Path {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{}", self.to_string())
     }
 }

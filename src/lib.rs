@@ -124,4 +124,12 @@ mod tests {
 
         assert_eq!(path.relative_from(&base).to_string(), "./foo.bar");
     }
+
+    #[test]
+    fn it_implements_display() {
+        let path = Path::from_str("C:/bar/foo.bar").unwrap();
+        let as_string = format!("{}", path);
+
+        assert_eq!(as_string, "C:/bar/foo.bar");
+    }
 }
