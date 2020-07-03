@@ -21,17 +21,35 @@ impl Path {
 
     pub fn from_current_exe() -> Result<Self, PathError> {
         use std::env::current_exe;
-        Self::from_std_path(&current_exe()?)
+        let mut path = Self::from_std_path(&current_exe()?)?;
+        path.ensure_directory();
+        Ok(path)
     }
 
     pub fn from_current_dir() -> Result<Self, PathError> {
         use std::env::current_dir;
-        Self::from_std_path(&current_dir()?)
+        let mut path = Self::from_std_path(&current_dir()?)?;
+        path.ensure_directory();
+        Ok(path)
     }
 
     pub(crate) fn new(segments: Vec<Segment>) -> Self {
         Self {
             segments,
+        }
+    }
+
+    pub fn is_directory(&self) -> bool {
+        if let Some(segment) = self.segments.last() {
+            segment.is_separator()
+        } else {
+            false
+        }
+    }
+
+    pub fn ensure_directory(&mut self) {
+        if !self.is_directory() {
+            self.segments.push(Segment::Separator);
         }
     }
 

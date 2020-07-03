@@ -146,4 +146,11 @@ mod tests {
         assert_eq!(None, Path::from_str("./").unwrap().extension());
         assert_eq!(None, Path::from_str("../").unwrap().extension());
     }
+
+    #[test]
+    fn it_is_a_directory() {
+        assert!(Path::from_str("./foo/").unwrap().is_directory());
+        assert!(!Path::from_str("./foo").unwrap().is_directory());
+        assert!(Path::from_str("./").unwrap().is_directory());
+    }
 }

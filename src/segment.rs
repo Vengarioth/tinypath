@@ -13,4 +13,11 @@ impl Segment {
             _ => None,
         }
     }
+
+    pub fn is_separator(&self) -> bool {
+        match self {
+            Segment::Separator => true,
+            _ => false,
+        }
+    }
 }
