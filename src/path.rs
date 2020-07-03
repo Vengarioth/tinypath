@@ -2,6 +2,7 @@ use crate::{Segment, Token, PathError, FileNameToken, FileNameSegment};
 use std::path::{PathBuf, Path as StdPath};
 use std::fmt;
 
+#[derive(Eq, PartialEq, Hash)]
 pub struct Path {
     segments: Vec<Segment>,
 }

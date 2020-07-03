@@ -1,4 +1,4 @@
-#[derive(Debug, Clone, Eq, PartialEq)]
+#[derive(Debug, Clone, Eq, PartialEq, Hash)]
 pub enum Segment {
     Separator,
     Segment(String),
