@@ -1,5 +1,5 @@
 use logos::Logos;
-use super::{Segment, PathError};
+use super::PathError;
 
 #[derive(Debug)]
 pub enum FileNameSegment {

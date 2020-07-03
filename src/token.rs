@@ -6,7 +6,7 @@ pub enum Token {
     #[regex(r"[\\/]+")]
     Separator,
 
-    #[regex(r"[^\\/]+")]
+    #[regex("[^\"\\\\/\\*\\?<>\\|]+")]
     Segment,
 
     #[regex(r"\.")]
