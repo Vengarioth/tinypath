@@ -1,4 +1,4 @@
-use crate::{Segment, Token, PathError};
+use crate::{Segment, Token, PathError, FileNameToken, FileNameSegment};
 use std::path::{PathBuf, Path as StdPath};
 use std::fmt;
 
@@ -31,6 +31,45 @@ impl Path {
     pub(crate) fn new(segments: Vec<Segment>) -> Self {
         Self {
             segments,
+        }
+    }
+
+    pub fn extension(&self) -> Option<String> {
+        let last = self.segments.last()?;
+        if let Some(segment) = last.get_segment() {
+            match FileNameToken::from_str(segment) {
+                Ok(segments) => {
+                    let mut skip_first_separator = true;
+                    let mut skip_next_segment = false;
+                    let mut result = None;
+                    for segment in segments {
+                        match segment {
+                            FileNameSegment::Separator => {
+                                if skip_first_separator {
+                                    skip_first_separator = false;
+                                    skip_next_segment = true;
+                                    continue;
+                                }
+
+                                result = Some("".to_string());
+                            },
+                            FileNameSegment::Segment(segment) => {
+                                if skip_next_segment {
+                                    skip_next_segment = false;
+                                    continue;
+                                }
+                                skip_first_separator = false;
+                                result = Some(segment);
+                            },
+                        }
+                    }
+
+                    result
+                },
+                Err(_) => None,
+            }
+        } else {
+            None
         }
     }
 

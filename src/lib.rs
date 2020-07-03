@@ -2,9 +2,11 @@ mod error;
 mod segment;
 mod path;
 mod token;
+mod file_name_token;
 
 use segment::Segment;
 use token::Token;
+use file_name_token::{FileNameToken, FileNameSegment};
 pub use error::PathError;
 pub use path::Path;
 
@@ -131,5 +133,17 @@ mod tests {
         let as_string = format!("{}", path);
 
         assert_eq!(as_string, "C:/bar/foo.bar");
+    }
+
+    #[test]
+    fn it_parses_extensions() {
+        assert_eq!(Some("bar".to_string()), Path::from_str("./foo.bar").unwrap().extension());
+        assert_eq!(Some("".to_string()), Path::from_str("./foo.").unwrap().extension());
+        assert_eq!(None, Path::from_str("./.").unwrap().extension());
+        assert_eq!(None, Path::from_str("./.foo").unwrap().extension());
+        assert_eq!(Some("foo".to_string()), Path::from_str("./.bar.foo").unwrap().extension());
+        assert_eq!(Some("foo".to_string()), Path::from_str("./.bar.foo.bar.foo.bar.foo").unwrap().extension());
+        assert_eq!(None, Path::from_str("./").unwrap().extension());
+        assert_eq!(None, Path::from_str("../").unwrap().extension());
     }
 }
